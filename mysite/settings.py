@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
+# 프로젝트의 기본 디렉토리 경로를 설정합니다. manage.py 파일이 있는 위치를 기준으로 합니다.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
@@ -20,70 +21,85 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
+# 프로덕션 환경에서는 이 키를 외부에 노출시키지 않도록 주의해야 합니다. Django의 암호화 관련 기능에 사용됩니다.
 SECRET_KEY = 'django-insecure-8nk#17ghe$7disnbb^cf-=tp&t$$q&k=1avq_d(0nvcb$v)!-f'
 
 # SECURITY WARNING: don't run with debug turned on in production!
+# DEBUG = True 이면 개발 중 오류 발생 시 상세한 디버깅 정보를 브라우저에 보여줍니다.
+# 프로덕션 환경에서는 반드시 False로 설정해야 합니다.
 DEBUG = True
 
+# 허용된 호스트 목록입니다. DEBUG = False 일 때, 여기에 명시된 호스트로만 접속이 허용됩니다.
+# 프로덕션 환경에서는 실제 서비스 도메인을 추가해야 합니다.
 ALLOWED_HOSTS = []
 
 
 # Application definition
-
+# 이 프로젝트에서 사용되는 모든 Django 앱들을 등록하는 곳입니다.
+# Django는 여기에 등록된 앱들에서 모델, URL, 템플릿, 관리자 설정 등을 찾습니다.
 INSTALLED_APPS = [
-    'polls.apps.PollsConfig', # 앱 추가
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
+    'polls.apps.PollsConfig', # 우리가 만든 polls 앱입니다. 앱 설정 클래스를 명시합니다.
+    'django.contrib.admin',   # Django 관리자 사이트 기능
+    'django.contrib.auth',    # 사용자 인증 시스템 (로그인, 회원가입 등)
+    'django.contrib.contenttypes', # 컨텐츠 타입을 위한 프레임워크 (모델 간의 일반적인 관계 설정 등에 사용)
+    'django.contrib.sessions',  # 세션 관리 기능 (예: 로그인 상태 유지)
+    'django.contrib.messages',  # 사용자에게 일회성 알림 메시지를 보여주는 기능
+    'django.contrib.staticfiles', # 정적 파일(CSS, JavaScript, 이미지 등) 관리 기능
 ]
 
+# 미들웨어는 Django의 요청/응답 처리 과정 중간에 개입하여 특정 기능을 수행합니다.
+# 여기에 등록된 순서대로 요청 시 처리되고, 응답 시에는 역순으로 처리됩니다.
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.security.SecurityMiddleware', # 보안 관련 미들웨어 (XSS 방지, 클릭재킹 방지 등)
+    'django.contrib.sessions.middleware.SessionMiddleware', # 세션 사용을 위한 미들웨어
+    'django.middleware.common.CommonMiddleware', # 일반적인 HTTP 처리 (예: URL 끝에 슬래시 추가)
+    'django.middleware.csrf.CsrfViewMiddleware', # CSRF(Cross-Site Request Forgery) 공격 방지
+    'django.contrib.auth.middleware.AuthenticationMiddleware', # 사용자 인증 정보(request.user)를 설정하는 미들웨어
+    'django.contrib.messages.middleware.MessageMiddleware', # 메시지 프레임워크 사용을 위한 미들웨어
+    'django.middleware.clickjacking.XFrameOptionsMiddleware', # 클릭재킹 방지를 위한 X-Frame-Options 헤더 추가
 ]
 
+# 최상위 URL 설정을 담고 있는 파이썬 모듈을 지정합니다.
+# Django는 요청을 받으면 이 설정에 따라 mysite.urls 모듈을 가장 먼저 참조하여 URL 라우팅을 시작합니다.
 ROOT_URLCONF = 'mysite.urls'
 
+# 템플릿 관련 설정입니다.
+# APP_DIRS = True로 설정하면 Django는 INSTALLED_APPS에 등록된 각 앱 디렉토리 내의 'templates' 폴더에서 템플릿 파일을 찾습니다.
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [], # 프로젝트 전체에서 사용할 공통 템플릿 디렉토리 (필요시 설정)
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.request', # 템플릿에서 request 객체에 접근 가능하게 함
+                'django.contrib.auth.context_processors.auth',  # 템플릿에서 user, perms 객체에 접근 가능하게 함
+                'django.contrib.messages.context_processors.messages', # 템플릿에서 messages 사용 가능하게 함
             ],
         },
     },
 ]
 
+# WSGI(Web Server Gateway Interface) 애플리케이션 객체를 지정합니다.
+# 프로덕션 웹 서버가 Django 애플리케이션과 통신하기 위한 진입점입니다.
 WSGI_APPLICATION = 'mysite.wsgi.application'
 
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-
+# 데이터베이스 연결 설정입니다.
+# 기본적으로 SQLite3를 사용하도록 되어 있지만, MySQL, PostgreSQL 등 다른 DB로 변경 가능합니다.
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'djangotutorial_db',  # 1단계에서 생성한 데이터베이스 이름
-        'USER': 'youngwookkang',    # 1단계에서 생성한 MySQL 사용자 이름
-        'PASSWORD': 'q1w2e3r4',  # 1단계에서 설정한 비밀번호
-        'HOST': 'localhost',   # 또는 MySQL 서버 IP 주소 (보통 'localhost' 또는 '127.0.0.1')
-        'PORT': '3306',        # MySQL 기본 포트 (보통 '3306')
-        'OPTIONS': {
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-            'charset': 'utf8mb4',
+    'default': { # 'default'라는 이름의 기본 데이터베이스 설정입니다.
+        'ENGINE': 'django.db.backends.mysql', # 사용할 데이터베이스 엔진 (MySQL)
+        'NAME': 'djangotutorial_db',  # 데이터베이스 이름 (MySQL에서 생성한 DB 이름)
+        'USER': 'youngwookkang',    # 데이터베이스 사용자 이름
+        'PASSWORD': 'q1w2e3r4',  # 데이터베이스 사용자 비밀번호
+        'HOST': 'localhost',   # 데이터베이스 서버 호스트 (로컬이면 'localhost' 또는 '127.0.0.1')
+        'PORT': '3306',        # 데이터베이스 서버 포트 (MySQL 기본 포트)
+        'OPTIONS': { # 추가적인 데이터베이스 연결 옵션
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'", # MySQL 연결 시 실행할 초기 명령어
+            'charset': 'utf8mb4', # 문자 인코딩 설정 (다국어 지원을 위해 utf8mb4 권장)
         },
     }
 }
@@ -91,7 +107,7 @@ DATABASES = {
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
-
+# 사용자 비밀번호 유효성 검사 규칙을 정의합니다.
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -108,24 +124,32 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-# Internationalization
+# Internationalization (국제화 및 현지화)
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
+# 기본 언어 설정입니다. (예: 'en-us', 'ko-kr')
 LANGUAGE_CODE = 'en-us'
 
+# 시간대 설정입니다. (예: 'UTC', 'Asia/Seoul')
+# 데이터베이스에 시간을 저장하거나, 템플릿에서 시간을 표시할 때 이 시간대를 기준으로 합니다.
 TIME_ZONE = 'Asia/Seoul'
 
+# Django의 번역 시스템 활성화 여부입니다.
 USE_I18N = True
 
+# 시간대 인식 날짜/시간 사용 여부입니다.
+# True로 설정하면 Django는 시간대 정보가 포함된 datetime 객체를 사용하고, 템플릿 등에서 자동으로 현지 시간으로 변환해줍니다.
 USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
+# 정적 파일의 URL 경로 접두사입니다. (예: /static/css/style.css)
 STATIC_URL = 'static/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
-
+# 모델의 기본 키(Primary Key) 필드 타입을 지정합니다.
+# BigAutoField는 큰 정수 범위를 지원하는 자동 증가 필드입니다.
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
