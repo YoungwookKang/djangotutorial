@@ -1,0 +1,19 @@
+<!-- Django 템플릿 문법 -->
+{% if latest_question_list %}
+  <ul>
+  {% for question in latest_question_list %}
+    <!-- 
+      url 태그는 장고의 URL 매핑 시스템에서 사용되는 태그입니다.
+      'detail'은 URL 매핑 이름이고, question.id는 질문의 ID입니다.
+      URL 매핑 이름은 polls/urls.py 파일에서 정의되어 있습니다.
+      만약 다른 앱의 urls.py에서 같은 URL 이름을 사용하면 충돌이 발생할 수 있습니다.
+      보통은 urls.py에서 이름을 지정할 때 앱 이름을 포함시키는 것이 좋습니다.
+      polls:detail 형식으로 사용합니다. 
+      이렇게 하면 다른 앱에서 동일한 URL 이름을 사용할 때 명확하게 구분할 수 있습니다.
+    -->
+    <li><a href="{%url 'polls:detail' question.id %}">{{ question.question_text }}</a></li>
+  {% endfor %}
+  </ul>
+{% else %}
+  <p>No polls are available.</p>
+{% endif %}
